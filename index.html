@@ -5,74 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Patristic Bible Lexicon</title>
   <style>
-    body {
-      font-family: 'Georgia', serif;
-      background-color: #f9f7f1;
-      color: #333;
-      padding: 40px 20px;
-      margin: 0;
-    }
-    h1 {
-      text-align: center;
-      color: #4a2e1b;
-      margin-bottom: 30px;
-      font-size: 2.5em;
-    }
-    .search-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      max-width: 600px;
-      margin: 0 auto 40px auto;
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    }
-    .search-container input {
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+    body { font-family: 'Georgia', serif; background-color: #f9f7f1; color: #333; padding: 40px 20px; margin: 0; }
+    h1 { text-align: center; color: #4a2e1b; margin-bottom: 30px; font-size: 2.5em; }
+    .search-container { display: flex; justify-content: center; align-items: center; gap: 10px; max-width: 600px; margin: 0 auto 40px auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    .search-container input { padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
     #searchBook { flex: 2; }
     #searchChapter, #searchVerse { flex: 1; width: 60px; text-align: center; }
-    .search-container button {
-      padding: 12px 24px;
-      font-size: 16px;
-      background-color: #4a2e1b;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+    .search-container button { padding: 12px 24px; font-size: 16px; background-color: #4a2e1b; color: white; border: none; border-radius: 4px; cursor: pointer; }
     .search-container button:hover { background-color: #362214; }
-    .flashcard-btn {
-      display: block;
-      margin: 0 auto 30px auto;
-      padding: 12px 24px;
-      background-color: #8b0000;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .translation-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .translation-box {
-      background: white;
-      padding: 25px;
-      border-radius: 8px;
-      border-top: 4px solid #d4c5b0;
-    }
-    .translation-box h3 { margin-top: 0; color: #666; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+    .flashcard-btn { display: block; margin: 0 auto 30px auto; padding: 12px 24px; background-color: #8b0000; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    .translation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1000px; margin: 0 auto; }
+    .translation-box { background: white; padding: 25px; border-radius: 8px; border-top: 4px solid #d4c5b0; }
+    .translation-box h3 { margin-top: 0; color: #666; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 10px; }
     .translation-box p { font-size: 18px; line-height: 1.6; }
     .rtl-text { direction: rtl; text-align: right; font-size: 22px; }
   </style>
@@ -85,7 +29,7 @@
     <input type="text" id="searchBook" placeholder="Book (e.g., John)">
     <input type="number" id="searchChapter" placeholder="Ch">
     <input type="number" id="searchVerse" placeholder="Vs">
-    <button onclick="alert('Search functionality coming soon!')">Search</button>
+    <button onclick="searchVerse()">Search</button>
   </div>
 
   <button class="flashcard-btn">📖 View Church Fathers Commentary</button>
@@ -93,21 +37,55 @@
   <div class="translation-grid">
     <div class="translation-box">
       <h3>English (OSB)</h3>
-      <p>Search a verse to see the English translation appear here.</p>
+      <p id="engText">Search a verse to see the English translation appear here.</p>
     </div>
     <div class="translation-box">
       <h3>Greek (Septuagint / NT)</h3>
-      <p>Search a verse to see the original Greek text appear here.</p>
+      <p id="grkText">Search a verse to see the original Greek text appear here.</p>
     </div>
     <div class="translation-box">
       <h3>Peshitta Aramaic</h3>
-      <p class="rtl-text">ܒܥܝ ܦܣܘܩܐ ܠܡܚܙܝ ܣܘܪܝܝܐ ܗܪܟܐ</p>
+      <p class="rtl-text" id="syrText">ܒܥܝ ܦܣܘܩܐ ܠܡܚܙܝ ܣܘܪܝܝܐ ܗܪܟܐ</p>
     </div>
     <div class="translation-box">
       <h3>Hebrew</h3>
-      <p class="rtl-text">חפש פסוק כדי לראות את הטקסט העברי כאן</p>
+      <p class="rtl-text" id="hebText">חפש פסוק כדי לראות את הטקסט העברי כאן</p>
+    </div>
+    <div class="translation-box">
+      <h3>Arabic (Smith & Van Dyck)</h3>
+      <p class="rtl-text" id="araText">ابحث عن آية لترى النص العربي هنا</p>
     </div>
   </div>
+
+  <script>
+    const bibleData = {
+      "John 19:30": {
+        english: "So when Jesus had received the sour wine, He said, 'It is finished!' And bowing His head, He gave up His spirit.",
+        greek: "ὅτε οὖν ἔλαβε τὸ ὄξος ὁ Ἰησοῦς εἶπε· Τετέλεσται· καὶ κλίνας τὴν κεφαλὴν παρέδωκε τὸ πνεῦμα.",
+        aramaic: "ܟ݁ܰܕ݂ ܕ݁ܶܝܢ ܢܣܰܒ݂ ܚܰܠܳܐ ܝܶܫܽܘܥ ܐܶܡܰܪ ܗܳܐ ܡܫܰܠܰܡ ܘܰܪܟ݂ܶܢ ܪܺܫܶܗ ܘܰܐܫܠܶܡ ܪܽܘܚܶܗ ܀",
+        hebrew: "כַּאֲשֶׁר לָקַח יֵשׁוּעַ אֶת־הַחֹמֶץ אָמַר נִשְׁלָם וַיֵּט אֶת־רֹאשׁוֹ וַיִּפַּח רוּחוֹ׃",
+        arabic: "فَلَمَّا أَخَذَ يَسُوعُ الْخَلَّ قَالَ: «قَدْ أُكْمِلَ». وَنَكَّסَ رَأْسَهُ وَأَسْلَمَ الرُّوحَ."
+      }
+    };
+
+    function searchVerse() {
+      const book = document.getElementById("searchBook").value.trim();
+      const chapter = document.getElementById("searchChapter").value.trim();
+      const verse = document.getElementById("searchVerse").value.trim();
+      const query = `${book} ${chapter}:${verse}`;
+
+      if (bibleData[query]) {
+        const data = bibleData[query];
+        document.getElementById("engText").innerText = data.english;
+        document.getElementById("grkText").innerText = data.greek;
+        document.getElementById("syrText").innerText = data.aramaic;
+        document.getElementById("hebText").innerText = data.hebrew;
+        document.getElementById("araText").innerText = data.arabic;
+      } else {
+        alert("Verse not found! For this demo, try Book: John, Ch: 19, Vs: 30");
+      }
+    }
+  </script>
 
 </body>
 </html>
