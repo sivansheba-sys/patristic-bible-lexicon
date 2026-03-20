@@ -11,27 +11,20 @@
     h1 { text-align: center; color: #4a2e1b; margin-bottom: 30px; font-size: 2.5em; }
     
     .search-container { display: flex; justify-content: center; gap: 10px; max-width: 600px; margin: 0 auto 40px auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-    .search-container input { padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
-    #searchBook { flex: 2; }
-    #searchChapter, #searchVerse { flex: 1; width: 60px; text-align: center; }
+    .search-container input { padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; width: 80px; }
+    #searchBook { flex: 2; width: auto; }
     
     .btn-main { padding: 12px 24px; font-size: 16px; background-color: #4a2e1b; color: white; border: none; border-radius: 4px; cursor: pointer; }
     .flashcard-btn { display: block; margin: 0 auto 30px auto; padding: 12px 24px; background-color: #8b0000; color: white; border: none; border-radius: 5px; cursor: pointer; }
     
     .translation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1000px; margin: 0 auto; }
-    
-    .translation-box { 
-      background: white; padding: 25px; border-radius: 8px; border-top: 4px solid #d4c5b0; 
-      cursor: pointer; transition: transform 0.2s; position: relative;
-    }
-    .translation-box:hover { transform: scale(1.01); background-color: #fffdf9; border-top-color: #4a2e1b; }
+    .translation-box { background: white; padding: 25px; border-radius: 8px; border-top: 4px solid #d4c5b0; cursor: pointer; transition: transform 0.2s; }
+    .translation-box:hover { transform: scale(1.01); background-color: #fffdf9; }
     .translation-box h3 { margin-top: 0; color: #666; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 10px; }
     
-    /* Hide text by default */
     .verse-text { font-size: 18px; line-height: 1.6; display: none; margin-top: 15px; }
     .rtl-text { direction: rtl; text-align: right; font-size: 26px; font-family: 'Amiri', serif; }
     .syriac-text { font-family: 'Noto Sans Syriac', serif; font-size: 24px; }
-
     .speaker-icon { font-size: 18px; vertical-align: middle; margin-left: 8px; color: #8b0000; display: none; }
   </style>
 </head>
@@ -52,27 +45,23 @@
   <div class="translation-grid">
     <div class="translation-box" onclick="revealLanguage('engText', 'en-US')">
       <h3>English (NKJV) <span id="spk-engText" class="speaker-icon">🔊</span></h3>
-      <p id="engText" class="verse-text">Search for a verse first...</p>
+      <p id="engText" class="verse-text">...</p>
     </div>
-
     <div class="translation-box" onclick="revealLanguage('grkText', 'el-GR')">
       <h3>Greek (LXX / NT) <span id="spk-grkText" class="speaker-icon">🔊</span></h3>
-      <p id="grkText" class="verse-text">Click to reveal Greek...</p>
+      <p id="grkText" class="verse-text">...</p>
     </div>
-
     <div class="translation-box" onclick="revealLanguage('syrText', 'he-IL')">
       <h3>Peshitta Aramaic <span id="spk-syrText" class="speaker-icon">🔊</span></h3>
-      <p id="syrText" class="verse-text rtl-text syriac-text">Click to reveal Aramaic...</p>
+      <p id="syrText" class="verse-text rtl-text syriac-text">...</p>
     </div>
-
     <div class="translation-box" onclick="revealLanguage('hebText', 'he-IL')">
       <h3>Hebrew <span id="spk-hebText" class="speaker-icon">🔊</span></h3>
-      <p id="hebText" class="verse-text rtl-text">Click to reveal Hebrew...</p>
+      <p id="hebText" class="verse-text rtl-text">...</p>
     </div>
-
     <div class="translation-box" onclick="revealLanguage('araText', 'ar-SA')">
       <h3>Arabic (Smith & Van Dyck) <span id="spk-araText" class="speaker-icon">🔊</span></h3>
-      <p id="araText" class="verse-text rtl-text">Click to reveal Arabic...</p>
+      <p id="araText" class="verse-text rtl-text">...</p>
     </div>
   </div>
 
@@ -80,10 +69,10 @@
     let currentVerseData = null;
 
     async function searchVerse() {
-      const book = document.getElementById("searchBook").value.trim();
-      const chapter = document.getElementById("searchChapter").value.trim();
-      const verse = document.getElementById("searchVerse").value.trim();
-      const query = `${book} ${chapter}:${verse}`;
+      const b = document.getElementById("searchBook").value.trim();
+      const c = document.getElementById("searchChapter").value.trim();
+      const v = document.getElementById("searchVerse").value.trim();
+      const query = `${b} ${c}:${v}`;
 
       try {
         const response = await fetch('bible-data.json');
@@ -91,43 +80,32 @@
         
         if (bibleData[query]) {
           currentVerseData = bibleData[query];
-          // Set the text behind the scenes
           document.getElementById("engText").innerText = currentVerseData.english;
           document.getElementById("grkText").innerText = currentVerseData.greek;
           document.getElementById("syrText").innerText = currentVerseData.aramaic;
           document.getElementById("hebText").innerText = currentVerseData.hebrew;
           document.getElementById("araText").innerText = currentVerseData.arabic;
-          
-          alert("Verse Loaded! Click on a language box to hear it read aloud.");
+          alert("Verse Found! Click a box to reveal and hear it.");
         } else {
-          alert("Verse not found in database.");
+          alert("Verse not found. Try John 19:30");
         }
       } catch (e) { console.error(e); }
     }
 
     function revealLanguage(id, langCode) {
-      if (!currentVerseData) {
-        alert("Please search for a verse first.");
-        return;
-      }
-      const element = document.getElementById(id);
-      const speaker = document.getElementById("spk-" + id);
-      
-      // Make text and speaker icon visible
-      element.style.display = "block";
-      speaker.style.display = "inline";
+      if (!currentVerseData) return;
+      document.getElementById(id).style.display = "block";
+      document.getElementById("spk-" + id).style.display = "inline";
 
-      // Browser Speech
-      const msg = new SpeechSynthesisUtterance();
-      msg.text = element.innerText;
+      const msg = new SpeechSynthesisUtterance(document.getElementById(id).innerText);
       msg.lang = langCode;
-      msg.rate = 0.8; // Slightly slower for clear pronunciation
+      msg.rate = 0.75;
       window.speechSynthesis.speak(msg);
     }
 
-    async function showCommentary() {
+    function showCommentary() {
       if (!currentVerseData || !currentVerseData.commentary) {
-        alert("Search for a verse first to see the commentary.");
+        alert("Search for a verse first.");
         return;
       }
       alert("PATRISTIC COMMENTARY:\n\n" + currentVerseData.commentary);
